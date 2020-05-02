@@ -3,12 +3,11 @@ import telebot
 import emoji
 import regex
 import config
-from googletrans import *
+from yandex_translate import YandexTranslate
 
 
 Token = config.Token
 bot = telebot.TeleBot(Token)
-translator = Translator()
 lang_to = "en"
 sess = {}
 
@@ -29,6 +28,7 @@ def handle_lang(message):
     bot.send_message(message.chat.id, "Выберите язык.", reply_markup=markup)
 
 
+
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
     if call.message:
@@ -44,25 +44,15 @@ def send_welcome(message):
     bot.reply_to(message, translate_to_en(message.text, message.chat.id))
 
 def translate_to_en(text, user_id):
-    translator = Translator()
-    data = regex.findall(r'\X', text)
-
-    for word in data:
-        if any(char in emoji.UNICODE_EMOJI for char in word):
-            # Remove from the given text the emojis
-            text = text.replace(word, '') 
-        print(text)
+    translator = YandexTranslate(config.Yandex_api_key)
 
 
-
-    
     if sess[user_id]:
-        result = translator.translate(text,  dest=f"{sess[user_id]}")
-        return result.text
+        result = translator.translate(text,  f"ru-en")
+        return result['text']
     elif not sess[user_id]:
-        result = translator.translate(text,  dest="en")
-        return result.text
+        result = translator.translate(text,  f"ru-en")
+        return result['text']
 
 if __name__ == "__main__":
     bot.polling()
-

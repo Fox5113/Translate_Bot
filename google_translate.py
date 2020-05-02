@@ -1,7 +1,9 @@
-
-import telebot
-from googletrans import *
 import config
+import telebot
+import emoji
+from googletrans import *
+
+
 
 bot = telebot.TeleBot("1297569871:AAEWP51O-YhcOr9KMUh0ZEDYAfaqCXnkE6Q")
 translator = Translator()
@@ -43,9 +45,11 @@ def callback_inline(call):
 
 @bot.message_handler(content_types=['text'])
 def send_welcome(message):
-	bot.reply_to(message, translate_to_en(message.text, message.chat.id))
+    #print(message.text)
+    bot.reply_to(message, translate_to_en(message.text, message.chat.id))
 
 def translate_to_en(text, user_id):
+     
     translator = Translator()
     if sess[user_id]:
         #print(sess)

@@ -23,8 +23,8 @@ def handle_start_help(message):
 @bot.message_handler(commands=['lang_to'])
 def handle_lang(message):
     markup = telebot.types.InlineKeyboardMarkup()
-    markup.add(telebot.types.InlineKeyboardButton(text='Анг', switch_inline_query="en", callback_data="en"))
-    markup.add(telebot.types.InlineKeyboardButton(text='Ru', switch_inline_query="ru", callback_data="ru"))
+    markup.add(telebot.types.InlineKeyboardButton(text='C английского на русский', switch_inline_query="en-ru", callback_data="en-ru"))
+    markup.add(telebot.types.InlineKeyboardButton(text='С русского на английский', switch_inline_query="ru-en", callback_data="ru-en"))
     bot.send_message(message.chat.id, "Выберите язык.", reply_markup=markup)
 
 
@@ -32,10 +32,10 @@ def handle_lang(message):
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
     if call.message:
-        if call.data == "en":
-            sess[call.message.chat.id] = 'en'
-        elif call.data == "ru":
-            sess[call.message.chat.id] = 'ru'
+        if call.data == "en-ru":
+            sess[call.message.chat.id] = 'en-ru'
+        elif call.data == "ru-en":
+            sess[call.message.chat.id] = 'ru-en'
 
 
 
@@ -48,10 +48,10 @@ def translate_to_en(text, user_id):
 
 
     if sess[user_id]:
-        result = translator.translate(text,  f"ru-en")
+        result = translator.translate(text,  f"{sess[user_id]}")
         return result['text']
     elif not sess[user_id]:
-        result = translator.translate(text,  f"ru-en")
+        result = translator.translate(text,  f"{sess[user_id]}")
         return result['text']
 
 if __name__ == "__main__":
